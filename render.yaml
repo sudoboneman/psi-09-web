@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: psi-09-web
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: PSI09_API_URL
+        value: https://psi-09-roastbot.onrender.com/psi09
