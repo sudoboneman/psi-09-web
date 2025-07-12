@@ -3,6 +3,7 @@ const { MongoStore } = require('wwebjs-mongo');
 const mongoose = require('mongoose');
 const qrcode = require('qrcode-terminal');
 const axios = require('axios');
+const express = require('express');
 require('dotenv').config();
 
 const mongoUri = process.env.MONGODB_URI;
@@ -33,7 +34,7 @@ const psi09ApiUrl = process.env.PSI09_API_URL;
     });
 
     client.on('qr', (qr) => {
-      console.log('🔑 Scan this QR OR pair using a CODE (if supported)');
+      console.log('🔑 Scan this QR');
       qrcode.generate(qr, { small: true });
     });
 
@@ -74,3 +75,11 @@ const psi09ApiUrl = process.env.PSI09_API_URL;
     console.error('❌ Startup error:', error);
   }
 })();
+
+// === Keep-Alive Server for Render ===
+const app = express();
+app.get('/', (req, res) => res.send('🤖 PSI-09 bot is alive!'));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🌐 Keep-alive server running on port ${PORT}`);
+});
