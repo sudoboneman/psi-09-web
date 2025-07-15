@@ -1,39 +1,28 @@
 const axios = require("axios");
 
-module.exports = function setupBot(client) {
+module.exports = (client) => {
   client.on("ready", () => {
-    console.log("🤖 WhatsApp bot is ready!");
+    console.log("✅ WhatsApp Web client is ready!");
   });
 
   client.on("message", async (msg) => {
-    // Ignore messages from groups that aren't text
-    if (!msg.body || msg.type !== "chat") return;
-
-    const chat = await msg.getChat();
-    const isGroup = chat.isGroup;
-    const senderName = msg._data.notifyName || "Unknown";
-    const groupName = isGroup ? chat.name : "Private";
+    const senderName = msg._data?.notifyName || "Unknown";
+    const groupName =
+      msg.from.endsWith("@g.us") ? msg._data?.notifyName || "Group" : "Private";
 
     try {
-      const response = await axios.post(
-        process.env.PSI09_API_URL, // <- Your Flask API URL
-        {
-          message: msg.body,
-          sender: senderName,
-          group_name: groupName
-        }
-      );
+      const res = await axios.post(process.env.PSI09_API_URL, {
+        message: msg.body,
+        sender: senderName,
+        group_name: groupName,
+      });
 
-      const reply = response.data.reply;
-      if (reply && typeof reply === "string") {
-        msg.reply(reply);
-      } else {
-        msg.reply("❌ PSI-09 sent an invalid response.");
+      if (res.data.reply) {
+        await msg.reply(res.data.reply);
       }
     } catch (err) {
-      console.error("Error calling PSI-09 API:", err.message);
-      msg.reply("💥 Error contacting PSI-09 roastbot.");
+      console.error("❌ Error talking to PSI-09:", err.message);
+      await msg.reply("PSI-09 crashed. Try again later.");
     }
   });
 };
-
