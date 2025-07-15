@@ -10,5 +10,4 @@ services:
         sync: false
       - key: PSI09_API_URL
         sync: false
-    autoDeploy: true
-    branch: main
+

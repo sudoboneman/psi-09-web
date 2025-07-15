@@ -1,50 +1,49 @@
-require("dotenv").config();
+const express = require("express");
 const { Client, RemoteAuth } = require("whatsapp-web.js");
 const { MongoStore } = require("wwebjs-mongo");
 const mongoose = require("mongoose");
-const axios = require("axios");
+const setupBot = require("./bot");
+require("dotenv").config();
 
-(async () => {
-  await mongoose.connect(process.env.MONGODB_URI);
-  const store = new MongoStore({ mongoose });
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-  const client = new Client({
-    authStrategy: new RemoteAuth({
-      store,
-      backupSyncIntervalMs: 300000,
-      clientId: "psi09-client"
-    }),
-    puppeteer: {
-      headless: true,
-      args: ["--no-sandbox"]
-    }
-  });
+// ✅ 1. /ping route for cron-job.org
+app.get("/ping", (req, res) => {
+  res.send("pong");
+});
 
-  client.on("ready", () => {
-    console.log("✅ WhatsApp bot is ready!");
-  });
+// ✅ 2. Start Express server
+app.listen(PORT, () => {
+  console.log(`✅ Express server running on port ${PORT}`);
+});
 
-  client.on("message", async (message) => {
-    if (message.fromMe) return;
+// ✅ 3. Connect to MongoDB and setup WhatsApp client
+async function startBot() {
+  try {
+    console.log("⏳ Connecting to MongoDB...");
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log("✅ Connected to MongoDB");
 
-    const contact = await message.getContact();
-    const chat = await message.getChat();
-    const sender = contact.pushname || contact.number;
-    const group = chat.isGroup ? chat.name : "DirectChat";
+    const store = new MongoStore({ mongoose });
 
-    try {
-      const response = await axios.post(process.env.PSI09_API_URL, {
-        message: message.body,
-        sender: sender,
-        group_name: group
-      });
+    const client = new Client({
+      authStrategy: new RemoteAuth({
+        store,
+        backupSyncIntervalMs: 300000 // 5 minutes
+      }),
+      puppeteer: {
+        headless: true,
+        args: ["--no-sandbox", "--disable-setuid-sandbox"]
+      }
+    });
 
-      await message.reply(response.data.reply);
-    } catch (err) {
-      console.error("❌ PSI-09 error:", err.message);
-      await message.reply("PSI-09 is currently unavailable.");
-    }
-  });
+    setupBot(client);
+    client.initialize();
+  } catch (err) {
+    console.error("❌ Error starting bot:", err);
+  }
+}
 
-  client.initialize();
-})();
+startBot();
+
