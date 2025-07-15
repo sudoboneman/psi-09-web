@@ -1,85 +1,53 @@
-const { Client, RemoteAuth } = require('whatsapp-web.js');
-const { MongoStore } = require('wwebjs-mongo');
-const mongoose = require('mongoose');
-const qrcode = require('qrcode-terminal');
-const axios = require('axios');
-const express = require('express');
-require('dotenv').config();
-
-const mongoUri = process.env.MONGODB_URI;
-const psi09ApiUrl = process.env.PSI09_API_URL;
+require("dotenv").config();
+const { RemoteAuth } = require("whatsapp-web.js");
+const { MongoStore } = require("wwebjs-mongo");
+const mongoose = require("mongoose");
+const { Client } = require("whatsapp-web.js");
+const axios = require("axios");
 
 (async () => {
-  try {
-    await mongoose.connect(mongoUri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
-    console.log('✅ MongoDB connected');
+  await mongoose.connect(process.env.MONGODB_URI);
+  const store = new MongoStore({ mongoose });
 
-    const store = new MongoStore({
-      mongoose: mongoose,
-      session: 'psi-session'
-    });
+  const client = new Client({
+    authStrategy: new RemoteAuth({
+      store,
+      backupSyncIntervalMs: 300000,
+      clientId: "psi09-client"
+    }),
+    puppeteer: {
+      headless: true,
+      args: ["--no-sandbox"]
+    }
+  });
 
-    const client = new Client({
-      authStrategy: new RemoteAuth({
-        store,
-        backupSyncIntervalMs: 300000,
-      }),
-      puppeteer: {
-        args: ['--no-sandbox'],
-        headless: true
-      }
-    });
+  client.on("ready", () => {
+    console.log("✅ WhatsApp Bot is ready!");
+  });
 
-    client.on('qr', (qr) => {
-      console.log('🔑 Scan this QR');
-      qrcode.generate(qr, { small: true });
-    });
+  client.on("message", async (message) => {
+    if (message.fromMe) return;
 
-    client.on('ready', () => {
-      console.log('🤖 PSI-09 bot is ready on WhatsApp');
-    });
+    const contact = await message.getContact();
+    const chat = await message.getChat();
 
-    client.on('remote_session_saved', () => {
-      console.log('💾 WhatsApp session saved to MongoDB');
-    });
+    const sender = contact.pushname || contact.number;
+    const group = chat.isGroup ? chat.name : "DirectChat";
 
-    client.on('message', async (message) => {
-      try {
-        const contact = await message.getContact();
-        const chat = await message.getChat();
+    try {
+      const response = await axios.post(process.env.PSI09_API_URL, {
+        message: message.body,
+        sender: sender,
+        group_name: group
+      });
 
-        if (!message.body || contact.isMe) return;
+      await message.reply(response.data.reply);
+    } catch (error) {
+      console.error("❌ Error contacting PSI-09:", error.message);
+      await message.reply("PSI-09 encountered an error.");
+    }
+  });
 
-        const payload = {
-          app: "WhatsApp",
-          sender: contact.pushname || contact.number,
-          message: message.body,
-          group_name: chat.isGroup ? chat.name : "DirectChat",
-          phone: contact.number
-        };
-
-        const response = await axios.post(psi09ApiUrl, payload);
-        const reply = response.data.reply;
-
-        await message.reply(reply);
-      } catch (err) {
-        console.error('❌ Error sending API request:', err.message);
-      }
-    });
-
-    await client.initialize();
-  } catch (error) {
-    console.error('❌ Startup error:', error);
-  }
+  client.initialize();
 })();
 
-// === Keep-Alive Server for Render ===
-const app = express();
-app.get('/', (req, res) => res.send('🤖 PSI-09 bot is alive!'));
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`🌐 Keep-alive server running on port ${PORT}`);
-});

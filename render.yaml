@@ -6,9 +6,9 @@ services:
     buildCommand: npm install
     startCommand: node index.js
     envVars:
-      - key: PSI09_API_URL
-        value: https://psi-09-roastbot.onrender.com/psi09
       - key: MONGODB_URI
-        value: mongodb+srv://boneman7908:R5KG59dUYwYdgvSm@psi-09-web.m7bwnog.mongodb.net/?retryWrites=true&w=majority&appName=psi-09-web
+        sync: false
+      - key: PSI09_API_URL
+        sync: false
     autoDeploy: true
     branch: main
