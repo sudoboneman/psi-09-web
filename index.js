@@ -24,24 +24,33 @@ console.log("⏳ Connecting to MongoDB...");
 mongoose.connect(process.env.MONGODB_URI).then(() => {
   console.log("✅ Connected to MongoDB");
 
-  const store = new MongoStore({ mongoose: mongoose });
+  const store = new MongoStore({ mongoose });
   const client = new Client({
     authStrategy: new RemoteAuth({
       store,
-      backupSyncIntervalMs: 300000
+      backupSyncIntervalMs: 300000, // 5 mins
     }),
     puppeteer: {
       headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"]
-    }
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    },
   });
 
-  // 4. Message handler
+  // 4. Bot is ready
+  client.on("ready", () => {
+    console.log("🤖 WhatsApp bot is ready and running!");
+  });
+
+  // 5. Handle auth errors
+  client.on("auth_failure", (msg) => {
+    console.error("❌ Auth failed:", msg);
+  });
+
+  // 6. Message handler
   client.on("message", async (msg) => {
     try {
       const chat = await msg.getChat();
       const isGroup = chat.isGroup;
-
       const groupName = isGroup ? chat.name : "DefaultGroup";
       const sender = msg._data.notifyName || msg.from;
       const message = msg.body;
@@ -56,7 +65,7 @@ mongoose.connect(process.env.MONGODB_URI).then(() => {
       const response = await axios.post(PSI09_API, {
         message,
         sender,
-        group_name: groupName
+        group_name: groupName,
       });
 
       const reply = response.data.reply || "[No reply]";
@@ -67,4 +76,6 @@ mongoose.connect(process.env.MONGODB_URI).then(() => {
   });
 
   client.initialize();
+}).catch((err) => {
+  console.error("❌ MongoDB connection failed:", err.message);
 });
