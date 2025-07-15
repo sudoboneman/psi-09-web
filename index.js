@@ -1,8 +1,7 @@
 require("dotenv").config();
-const { RemoteAuth } = require("whatsapp-web.js");
+const { Client, RemoteAuth } = require("whatsapp-web.js");
 const { MongoStore } = require("wwebjs-mongo");
 const mongoose = require("mongoose");
-const { Client } = require("whatsapp-web.js");
 const axios = require("axios");
 
 (async () => {
@@ -22,7 +21,7 @@ const axios = require("axios");
   });
 
   client.on("ready", () => {
-    console.log("✅ WhatsApp Bot is ready!");
+    console.log("✅ WhatsApp bot is ready!");
   });
 
   client.on("message", async (message) => {
@@ -30,7 +29,6 @@ const axios = require("axios");
 
     const contact = await message.getContact();
     const chat = await message.getChat();
-
     const sender = contact.pushname || contact.number;
     const group = chat.isGroup ? chat.name : "DirectChat";
 
@@ -42,12 +40,11 @@ const axios = require("axios");
       });
 
       await message.reply(response.data.reply);
-    } catch (error) {
-      console.error("❌ Error contacting PSI-09:", error.message);
-      await message.reply("PSI-09 encountered an error.");
+    } catch (err) {
+      console.error("❌ PSI-09 error:", err.message);
+      await message.reply("PSI-09 is currently unavailable.");
     }
   });
 
   client.initialize();
 })();
-
