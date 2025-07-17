@@ -1,0 +1,83 @@
+{
+  "cookies": [
+    {
+      "name": "wa_ul",
+      "value": "5db18f7b-2d5a-45ee-89a2-7e7b2da8311c",
+      "domain": ".web.whatsapp.com",
+      "path": "/",
+      "expires": 1760553090.759561,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "wa_web_lang_pref",
+      "value": "en_GB",
+      "domain": ".web.whatsapp.com",
+      "path": "/",
+      "expires": 1755196293,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://web.whatsapp.com",
+      "localStorage": [
+        {
+          "name": "WAUnknownID",
+          "value": "\"unknown-1015069882\""
+        },
+        {
+          "name": "last-wid-md",
+          "value": "\"919477853548:18@c.us\""
+        },
+        {
+          "name": "WALid",
+          "value": "\"230816475041915:18@lid\""
+        },
+        {
+          "name": "WANoiseInfo",
+          "value": "{\"privKey\":\"cPnVeJTVOy1qsrM57JI9rr+JvX8E2487Jg0kHHDM2Dc62tTz3FvOERUmwHp1YJ7m\",\"pubKey\":\"vYjs8FPUXcFYzIn1AQFFqyVXzD8iKBeJbTUoDQG42Ik7bi6U3wz8d1Ytrd5/CJ7B\",\"recoveryToken\":\"ius5ORIvoIuU3WUJgyjIJPTdQST774ARsfzkcJGUAKA=\"}"
+        },
+        {
+          "name": "WALangPhonePref",
+          "value": "\"en_GB\""
+        },
+        {
+          "name": "WAWebWAMBeaconingSettings",
+          "value": "\"[{\\\"key\\\":\\\"regular\\\",\\\"ts\\\":1752777105,\\\"value\\\":null}]\""
+        },
+        {
+          "name": "WAWebEncKeySalt",
+          "value": "\"JDJk6/6YVLfESyfyLkK3mwD2CJl3kt19Zeum/ozuNPq9hlkBYVcdbovFMkJOmHO9BZ1TBwqdJrjqKd+LsRGe1BCqJ3YDd7krfqYapyjGQU9pB/R4+N+h7UKJ/HPTNLWHFo3muzotVIILUrHWM7ug2XGm5Log6//ol1pBaeCB8Kg=\""
+        },
+        {
+          "name": "MdPairingTimestamp",
+          "value": "1752777158"
+        },
+        {
+          "name": "WebEncKeySalt",
+          "value": "\"JDJk6/6YVLfESyfyLkK3mwD2CJl3kt19Zeum/ozuNPq9hlkBYVcdbovFMkJOmHO9BZ1TBwqdJrjqKd+LsRGe1BCqJ3YDd7krfqYapyjGQU9pB/R4+N+h7UKJ/HPTNLWHFo3muzotVIILUrHWM7ug2XGm5Log6//ol1pBaeCB8Kg=\""
+        },
+        {
+          "name": "Session",
+          "value": "2r6yon:1752777125266"
+        },
+        {
+          "name": "WADailyStatsStartTime",
+          "value": "1752777158187"
+        },
+        {
+          "name": "WANoiseInfoIv",
+          "value": "[\"CV4gzKrIJpSWKMXAnHjduA==\",\"wd6/Ctm3hNpxq5LrlE+REg==\",\"UZvfjB9+dLQQIZImBvYF+Q==\",\"irRrEK7BImHmIVy3tpjhIA==\"]"
+        },
+        {
+          "name": "whatsapp-mutex",
+          "value": "\"x248756522:init_1752777095025\""
+        }
+      ]
+    }
+  ]
+}

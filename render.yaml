@@ -4,10 +4,8 @@ services:
     env: node
     plan: free
     buildCommand: npm install
-    startCommand: node index.js
+    startCommand: npm start
     envVars:
-      - key: MONGODB_URI
-        sync: false
       - key: PSI09_API_URL
-        sync: false
+        value: https://psi-09-roastbot.onrender.com/psi09
 
