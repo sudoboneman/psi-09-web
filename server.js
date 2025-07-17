@@ -13,7 +13,7 @@ const PSI09_API = process.env.PSI09_API_URL;
 
 // 🔍 Auto-detect installed Chromium executable
 function getChromiumPath() {
-  const baseDir = '/opt/render/.cache/ms-playwright';
+  const baseDir = '/opt/render/.cache/ms-playwright/chromium_headless_shell-1181';
   const dirs = readdirSync(baseDir).filter(d => d.startsWith('chromium'));
   if (!dirs.length) throw new Error("Chromium not found in Playwright cache");
   const chromiumFolder = path.join(baseDir, dirs[0], 'chrome-linux', 'headless_shell');
