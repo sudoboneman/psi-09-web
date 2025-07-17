@@ -1,5 +1,6 @@
 import { chromium } from 'playwright';
 import fs from 'fs/promises';
+import fsSync from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
