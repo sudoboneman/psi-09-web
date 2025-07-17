@@ -1,12 +1,11 @@
 services:
   - type: web
-    name: psi-09-web
+    name: psi-09-playwright-bot
     env: node
-    plan: free
     buildCommand: |
       npm install
-      npx playwright install
+      npx playwright install chromium
     startCommand: node server.js
     envVars:
-      - key: PSI09_API_URL
-        value: https://psi-09-roastbot.onrender.com/psi09
+      - key: NODE_VERSION
+        value: 18
