@@ -1,11 +1,9 @@
 services:
   - type: web
-    name: playwright-whatsapp-bot
-    runtime: node
+    name: psi-09-web
+    env: node
+    plan: free
     buildCommand: |
       npm install
       npx playwright install chromium
     startCommand: node server.js
-    envVars:
-      - key: NODE_ENV
-        value: production
