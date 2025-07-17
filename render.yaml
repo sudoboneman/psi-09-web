@@ -2,9 +2,7 @@ services:
   - type: web
     name: psi-09-playwright-bot
     env: node
-    buildCommand: |
-      npm install
-      npx playwright install chromium
+    buildCommand: npm install && npx playwright install chromium
     startCommand: node server.js
     envVars:
       - key: NODE_VERSION

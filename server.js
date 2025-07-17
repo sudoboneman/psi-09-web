@@ -4,36 +4,50 @@ import path from 'path';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import axios from 'axios';
+import { readdirSync } from 'fs';
 
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 const PSI09_API = process.env.PSI09_API_URL;
+
+// 🔍 Auto-detect installed Chromium executable
+function getChromiumPath() {
+  const baseDir = '/opt/render/.cache/ms-playwright';
+  const dirs = readdirSync(baseDir).filter(d => d.startsWith('chromium'));
+  if (!dirs.length) throw new Error("Chromium not found in Playwright cache");
+  const chromiumFolder = path.join(baseDir, dirs[0], 'chrome-linux', 'headless_shell');
+  return chromiumFolder;
+}
 
 (async () => {
   console.log("🔁 Launching Playwright with saved session...");
+
   const storageState = JSON.parse(await fs.readFile(path.join(__dirname, 'whatsapp-session.json')));
-  const browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
+  const executablePath = getChromiumPath();
+
+  const browser = await chromium.launch({
+    headless: true,
+    args: ['--no-sandbox'],
+    executablePath
+  });
+
   const context = await browser.newContext({ storageState });
   const page = await context.newPage();
-
   await page.goto('https://web.whatsapp.com');
 
   console.log("⏳ Waiting for chats to load...");
   await page.waitForSelector('[data-testid="chat-list"]', { timeout: 180000 });
-
   console.log("✅ Logged into WhatsApp Web");
 
   while (true) {
     try {
-      // Watch for new unread messages every few seconds
       const unreadMessages = await page.$$('span[aria-label="Unread message"]');
       for (const unread of unreadMessages) {
         const chat = await unread.evaluateHandle(el => el.closest('._2aBzC') || el.closest('[role="row"]'));
         if (chat) {
           await chat.click();
-          await page.waitForTimeout(1000); // Wait for chat to load
+          await page.waitForTimeout(1000);
 
           const messages = await page.$$eval('div.selectable-text span[dir="ltr"]', spans =>
             spans.map(el => el.textContent).slice(-1)
@@ -42,19 +56,57 @@ const PSI09_API = process.env.PSI09_API_URL;
           const lastMessage = messages[messages.length - 1];
           console.log("📩 Incoming:", lastMessage);
 
-          const response = await axios.post(PSI09_API, {
-            message: lastMessage,
-            sender: "playwright-bot",
-            group_name: "Playwright Group"
-          });
+          const chatTitle = await page.$eval('header span[title]', el => el.textContent);
+          const isGroupChat = await page.$('header span[data-testid="default-group"]') !== null;
 
-          const reply = response.data.reply || "[No reply]";
-          console.log("🤖 PSI-09:", reply);
+          let senderName = "Unknown Sender";
+          let groupName = isGroupChat ? chatTitle : null;
 
-          const messageBox = await page.$('div[title="Type a message"]');
-          await messageBox.click();
-          await messageBox.type(reply);
-          await messageBox.press('Enter');
+          if (!isGroupChat) {
+            senderName = chatTitle;
+          }
+
+          if (isGroupChat && lastMessage.includes("@Supratim_H")) {
+            const senderElement = await page.$('div.message-in span[dir="auto"] strong');
+            if (senderElement) {
+              senderName = await senderElement.textContent();
+            }
+
+            console.log("📨 Sender:", senderName);
+            console.log("👥 Group:", groupName);
+
+            const response = await axios.post(PSI09_API, {
+              message: lastMessage,
+              sender: senderName,
+              group_name: groupName
+            });
+
+            const reply = response.data.reply || "[No reply]";
+            console.log("🤖 PSI-09:", reply);
+
+            const messageBox = await page.$('div[title="Type a message"]');
+            await messageBox.click();
+            await messageBox.type(reply);
+            await messageBox.press('Enter');
+          } else if (!isGroupChat) {
+            console.log("📨 Sender:", senderName);
+
+            const response = await axios.post(PSI09_API, {
+              message: lastMessage,
+              sender: senderName,
+              group_name: null
+            });
+
+            const reply = response.data.reply || "[No reply]";
+            console.log("🤖 PSI-09:", reply);
+
+            const messageBox = await page.$('div[title="Type a message"]');
+            await messageBox.click();
+            await messageBox.type(reply);
+            await messageBox.press('Enter');
+          } else {
+            console.log("⏭️ Skipped: PSI-09 not pinged in group chat.");
+          }
         }
       }
     } catch (err) {
@@ -64,4 +116,3 @@ const PSI09_API = process.env.PSI09_API_URL;
     await page.waitForTimeout(5000);
   }
 })();
-

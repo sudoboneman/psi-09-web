@@ -1,12 +1,22 @@
 {
-  "scripts": {
-    "postinstall": "npx playwright install chromium",
-    "start": "node server.js"
-  },
+  "name": "psi-09-web",
+  "version": "1.0.0",
+  "description": "Automated WhatsApp Web bot using Playwright and PSI-09 API",
+  "main": "server.js",
   "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "install:browsers": "npx playwright install chromium"
+  },
   "dependencies": {
     "axios": "^1.6.8",
     "dotenv": "^17.2.0",
-    "playwright": "^1.43.0"
-  }
+    "playwright": "^1.44.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": ["playwright", "whatsapp", "psi-09", "automation"],
+  "author": "sudoboneman",
+  "license": "MIT"
 }
