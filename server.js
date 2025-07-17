@@ -13,12 +13,20 @@ const PSI09_API = process.env.PSI09_API_URL;
 
 // 🔍 Auto-detect installed Chromium executable
 function getChromiumPath() {
-  const baseDir = '/opt/render/.cache/ms-playwright/chromium_headless_shell-1181';
-  const dirs = readdirSync(baseDir).filter(d => d.startsWith('chromium'));
-  if (!dirs.length) throw new Error("Chromium not found in Playwright cache");
-  const chromiumFolder = path.join(baseDir, dirs[0], 'chrome-linux', 'headless_shell');
-  return chromiumFolder;
+  const base = '/opt/render/.cache/ms-playwright';
+  if (!fsSync.existsSync(base)) return null;
+
+  const dirs = readdirSync(base);
+  for (const dir of dirs) {
+    const shellPath = path.join(base, dir, 'chrome-linux', 'headless_shell');
+    const chromePath = path.join(base, dir, 'chrome-linux', 'chrome');
+    if (fsSync.existsSync(shellPath)) return shellPath;
+    if (fsSync.existsSync(chromePath)) return chromePath;
+  }
+
+  throw new Error("❌ Chromium not found in Playwright cache");
 }
+
 
 (async () => {
   console.log("🔁 Launching Playwright with saved session...");
