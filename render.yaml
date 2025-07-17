@@ -5,7 +5,7 @@ services:
     plan: free
     buildCommand: |
       npm install
-      npx playwright install chromium
+      npx playwright install
     startCommand: node server.js
     envVars:
       - key: PSI09_API_URL
