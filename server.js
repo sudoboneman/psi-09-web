@@ -13,19 +13,26 @@ const __dirname = path.dirname(__filename);
 const PSI09_API = process.env.PSI09_API_URL;
 
 // 🔍 Auto-detect installed Chromium executable
+import fsSync from 'fs';
+
 function getChromiumPath() {
   const base = '/opt/render/.cache/ms-playwright';
-  if (!fsSync.existsSync(base)) return null;
 
-  const dirs = readdirSync(base);
+  if (!fsSync.existsSync(base)) {
+    throw new Error("❌ Playwright cache directory not found.");
+  }
+
+  const dirs = fsSync.readdirSync(base);
+
   for (const dir of dirs) {
-    const shellPath = path.join(base, dir, 'chrome-linux', 'headless_shell');
-    const chromePath = path.join(base, dir, 'chrome-linux', 'chrome');
+    const shellPath = `${base}/${dir}/chrome-linux/headless_shell`;
+    const chromePath = `${base}/${dir}/chrome-linux/chrome`;
+
     if (fsSync.existsSync(shellPath)) return shellPath;
     if (fsSync.existsSync(chromePath)) return chromePath;
   }
 
-  throw new Error("❌ Chromium not found in Playwright cache");
+  throw new Error("❌ Chromium executable not found in Playwright cache.");
 }
 
 
@@ -34,6 +41,7 @@ function getChromiumPath() {
 
   const storageState = JSON.parse(await fs.readFile(path.join(__dirname, 'whatsapp-session.json')));
   const executablePath = getChromiumPath();
+  if (!executablePath) throw new Error("Chromium executable path not found");
 
   const browser = await chromium.launch({
     headless: true,
