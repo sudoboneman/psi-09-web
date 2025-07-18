@@ -1,4 +1,5 @@
-import { chromium } from 'playwright';
+// Converted from Playwright to Puppeteer
+import puppeteer from 'puppeteer';
 import fs from 'fs/promises';
 import path from 'path';
 import dotenv from 'dotenv';
@@ -11,18 +12,18 @@ const __dirname = path.dirname(__filename);
 const PSI09_API = process.env.PSI09_API_URL;
 
 (async () => {
-  console.log("🔁 Launching Playwright with saved session...");
+  console.log("🔁 Launching Puppeteer with saved session...");
 
-  const storageState = JSON.parse(await fs.readFile(path.join(__dirname, 'whatsapp-session.json')));
+  const storageFile = path.join(__dirname, 'whatsapp-session.json');
+  let userDataDir = path.join(__dirname, 'puppeteer-profile');
 
-  const browser = await chromium.launchPersistentContext('', {
+  const browser = await puppeteer.launch({
     headless: true,
-    args: ['--no-sandbox']
+    args: ['--no-sandbox'],
+    userDataDir
   });
 
-
-  const context = await browser.newContext({ storageState });
-  const page = await context.newPage();
+  const page = await browser.newPage();
   await page.goto('https://web.whatsapp.com');
 
   console.log("⏳ Waiting for chats to load...");
@@ -58,7 +59,7 @@ const PSI09_API = process.env.PSI09_API_URL;
           if (isGroupChat && lastMessage.includes("@Supratim_H")) {
             const senderElement = await page.$('div.message-in span[dir="auto"] strong');
             if (senderElement) {
-              senderName = await senderElement.textContent();
+              senderName = await page.evaluate(el => el.textContent, senderElement);
             }
 
             console.log("📨 Sender:", senderName);
