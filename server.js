@@ -15,10 +15,11 @@ const PSI09_API = process.env.PSI09_API_URL;
 
   const storageState = JSON.parse(await fs.readFile(path.join(__dirname, 'whatsapp-session.json')));
 
-  const browser = await chromium.launch({
+  const browser = await chromium.launchPersistentContext('', {
     headless: true,
-    args: ['--no-sandbox']  // required for sandboxed containers like Render
+    args: ['--no-sandbox']
   });
+
 
   const context = await browser.newContext({ storageState });
   const page = await context.newPage();
