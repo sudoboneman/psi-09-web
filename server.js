@@ -1,5 +1,5 @@
-// Converted from Playwright to Puppeteer
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
+import chromium from 'chrome-aws-lambda';
 import fs from 'fs/promises';
 import path from 'path';
 import dotenv from 'dotenv';
@@ -12,20 +12,12 @@ const __dirname = path.dirname(__filename);
 const PSI09_API = process.env.PSI09_API_URL;
 
 (async () => {
-  console.log("🔁 Launching Puppeteer with saved session...");
-
-  const storageFile = path.join(__dirname, 'whatsapp-session.json');
-  let userDataDir = path.join(__dirname, 'puppeteer-profile');
-
-  const CHROME_PATH = '/opt/render/.cache/puppeteer/chrome/linux-127.0.6533.88/chrome-linux64/chrome';
-
-  console.log("🔁 Launching Puppeteer with saved session...");
-  console.log("📍 Using Chromium binary:", CHROME_PATH);
+  console.log("🔁 Launching Puppeteer with chrome-aws-lambda...");
 
   const browser = await puppeteer.launch({
-    headless: true,
-    executablePath: CHROME_PATH,
-    args: ['--no-sandbox']
+    args: chromium.args,
+    executablePath: await chromium.executablePath,
+    headless: chromium.headless
   });
 
   const page = await browser.newPage();
