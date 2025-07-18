@@ -17,10 +17,17 @@ const PSI09_API = process.env.PSI09_API_URL;
   const storageFile = path.join(__dirname, 'whatsapp-session.json');
   let userDataDir = path.join(__dirname, 'puppeteer-profile');
 
+  import puppeteer from 'puppeteer';
+
+  const CHROME_PATH = '/opt/render/.cache/puppeteer/chrome/linux-127.0.6533.88/chrome-linux64/chrome';
+
+  console.log("🔁 Launching Puppeteer with saved session...");
+  console.log("📍 Using Chromium binary:", CHROME_PATH);
+
   const browser = await puppeteer.launch({
     headless: true,
-    args: ['--no-sandbox'],
-    userDataDir
+    executablePath: CHROME_PATH,
+    args: ['--no-sandbox']
   });
 
   const page = await browser.newPage();

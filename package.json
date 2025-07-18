@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "postinstall": "npx puppeteer browsers install chrome",
+    "postinstall": "npx puppeteer browsers install chrome --path=/opt/render/.cache/puppeteer",
     "start": "node server.js"
   },
   "dependencies": {
