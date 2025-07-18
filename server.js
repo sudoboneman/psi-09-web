@@ -17,8 +17,6 @@ const PSI09_API = process.env.PSI09_API_URL;
   const storageFile = path.join(__dirname, 'whatsapp-session.json');
   let userDataDir = path.join(__dirname, 'puppeteer-profile');
 
-  import puppeteer from 'puppeteer';
-
   const CHROME_PATH = '/opt/render/.cache/puppeteer/chrome/linux-127.0.6533.88/chrome-linux64/chrome';
 
   console.log("🔁 Launching Puppeteer with saved session...");
