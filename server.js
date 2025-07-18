@@ -1,6 +1,5 @@
 import { chromium } from 'playwright';
 import fs from 'fs/promises';
-import { readdirSync, statSync, existsSync } from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
@@ -11,53 +10,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PSI09_API = process.env.PSI09_API_URL;
 
-// 🔍 Auto-detect installed Chromium executable
-
-function findExecutable(dir, executableName) {
-  const files = readdirSync(dir);
-
-  for (const file of files) {
-    const fullPath = path.join(dir, file);
-    const stat = statSync(fullPath);
-
-    if (stat.isDirectory()) {
-      const result = findExecutable(fullPath, executableName);
-      if (result) return result;
-    } else if (file === executableName && stat.isFile()) {
-      return fullPath;
-    }
-  }
-
-  return null;
-}
-
-function getChromiumPath() {
-  const baseDir = '/opt/render/.cache/ms-playwright/chromium_headless_shell-1181';
-  const executableName = 'headless_shell';
-
-  if (!existsSync(baseDir)) {
-    throw new Error(`❌ Chromium base directory does not exist: ${baseDir}`);
-  }
-
-  const foundPath = findExecutable(baseDir, executableName);
-  if (!foundPath) {
-    throw new Error(`❌ Chromium executable '${executableName}' not found under: ${baseDir}`);
-  }
-
-  return foundPath;
-}
-
 (async () => {
   console.log("🔁 Launching Playwright with saved session...");
 
   const storageState = JSON.parse(await fs.readFile(path.join(__dirname, 'whatsapp-session.json')));
-  const executablePath = getChromiumPath();
-  if (!executablePath) throw new Error("Chromium executable path not found");
 
   const browser = await chromium.launch({
     headless: true,
-    args: ['--no-sandbox'],
-    executablePath
+    args: ['--no-sandbox']  // required for sandboxed containers like Render
   });
 
   const context = await browser.newContext({ storageState });
