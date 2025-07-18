@@ -1,13 +1,9 @@
 services:
   - type: web
     name: psi09-whatsapp-bot
-    runtime: node
-    region: oregon
-    plan: free
-    buildCommand: npm install
+    env: node
+    buildCommand: |
+      npm install
+      npx puppeteer browsers install chrome
     startCommand: node server.js
-    autoDeploy: true
-    envVars:
-      - key: PSI09_API_URL
-        value: https://psi-09-roastbot.onrender.com/psi09
-
+    plan: free

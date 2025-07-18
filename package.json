@@ -1,15 +1,13 @@
 {
-  "name": "psi-09-web",
+  "name": "psi09-whatsapp-bot",
   "version": "1.0.0",
-  "description": "Automated WhatsApp Web bot that talks to PSI-09 roastbot API",
-  "main": "server.js",
   "type": "module",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "axios": "^1.6.8",
+    "puppeteer": "^22.10.0",
     "dotenv": "^17.2.0",
-    "puppeteer": "^22.10.0"
+    "axios": "^1.6.8"
   }
 }
