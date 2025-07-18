@@ -1,11 +1,10 @@
 import { chromium } from 'playwright';
 import fs from 'fs/promises';
-import { existsSync } from 'fs';
+import { readdirSync, statSync, existsSync } from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import axios from 'axios';
-import { readdirSync } from 'fs';
 
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
@@ -14,14 +13,38 @@ const PSI09_API = process.env.PSI09_API_URL;
 
 // 🔍 Auto-detect installed Chromium executable
 
-function getChromiumPath() {
-  const shellPath = '/opt/render/.cache/ms-playwright/chromium_headless_shell-1181/headless_shell';
+function findExecutable(dir, executableName) {
+  const files = readdirSync(dir);
 
-  if (existsSync(shellPath)) {
-    return shellPath;
+  for (const file of files) {
+    const fullPath = path.join(dir, file);
+    const stat = statSync(fullPath);
+
+    if (stat.isDirectory()) {
+      const result = findExecutable(fullPath, executableName);
+      if (result) return result;
+    } else if (file === executableName && stat.isFile()) {
+      return fullPath;
+    }
   }
 
-  throw new Error(`❌ Chromium executable not found at expected path: ${shellPath}`);
+  return null;
+}
+
+function getChromiumPath() {
+  const baseDir = '/opt/render/.cache/ms-playwright/chromium_headless_shell-1181';
+  const executableName = 'headless_shell';
+
+  if (!existsSync(baseDir)) {
+    throw new Error(`❌ Chromium base directory does not exist: ${baseDir}`);
+  }
+
+  const foundPath = findExecutable(baseDir, executableName);
+  if (!foundPath) {
+    throw new Error(`❌ Chromium executable '${executableName}' not found under: ${baseDir}`);
+  }
+
+  return foundPath;
 }
 
 (async () => {
