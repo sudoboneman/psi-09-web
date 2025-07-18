@@ -4,6 +4,6 @@ services:
     env: node
     buildCommand: |
       npm install
-      npx puppeteer browsers install chrome --path=/opt/render/.cache/puppeteer
+      npx puppeteer browsers install chrome
     startCommand: node server.js
     plan: free

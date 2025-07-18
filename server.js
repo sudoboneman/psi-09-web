@@ -11,6 +11,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PSI09_API = process.env.PSI09_API_URL;
 
+const SESSION_FILE = path.join(__dirname, 'whatsapp-session.json');
+
 (async () => {
   console.log("🔁 Launching Puppeteer with chrome-aws-lambda...");
 
@@ -21,12 +23,55 @@ const PSI09_API = process.env.PSI09_API_URL;
   });
 
   const page = await browser.newPage();
+
+  // 🔁 Load session if exists
+  try {
+    const sessionData = JSON.parse(await fs.readFile(SESSION_FILE, 'utf-8'));
+
+    if (sessionData.cookies) {
+      await page.setCookie(...sessionData.cookies);
+      console.log("✅ Cookies restored");
+    }
+
+    if (sessionData.localStorage) {
+      await page.goto('https://web.whatsapp.com', { waitUntil: 'domcontentloaded' });
+      await page.evaluate(storage => {
+        for (const [key, value] of Object.entries(storage)) {
+          localStorage.setItem(key, value);
+        }
+      }, sessionData.localStorage);
+      console.log("✅ LocalStorage restored");
+    }
+  } catch (err) {
+    console.warn("⚠️ No session found or failed to load session:", err.message);
+  }
+
+  // ⏳ Login or validate session
   await page.goto('https://web.whatsapp.com');
 
   console.log("⏳ Waiting for chats to load...");
   await page.waitForSelector('[data-testid="chat-list"]', { timeout: 180000 });
   console.log("✅ Logged into WhatsApp Web");
 
+  // 💾 Save session
+  try {
+    const cookies = await page.cookies();
+    const localStorageData = await page.evaluate(() => {
+      const data = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        data[key] = localStorage.getItem(key);
+      }
+      return data;
+    });
+
+    await fs.writeFile(SESSION_FILE, JSON.stringify({ cookies, localStorage: localStorageData }));
+    console.log("💾 Session saved to whatsapp-session.json");
+  } catch (err) {
+    console.error("❌ Failed to save session:", err.message);
+  }
+
+  // 🔁 Main loop
   while (true) {
     try {
       const unreadMessages = await page.$$('span[aria-label="Unread message"]');
