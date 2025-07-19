@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer-core';
+import puppeteer from 'puppeteer';
 import chromium from 'chrome-aws-lambda';
 import fs from 'fs/promises';
 import path from 'path';
