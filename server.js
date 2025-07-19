@@ -1,66 +1,74 @@
+import express from 'express';
+import fs from 'fs/promises';
 import { Client } from 'whatsapp-web.js';
-import fs from 'fs';
-import axios from 'axios';
 import dotenv from 'dotenv';
+import axios from 'axios';
 
 dotenv.config();
 
-const SESSION_FILE_PATH = './whatsapp-session.json';
+const app = express();
+const port = process.env.PORT || 10000;
 
-// ✅ Load session data
-if (!fs.existsSync(SESSION_FILE_PATH)) {
-  console.error('❌ whatsapp-session.json not found. Cannot start bot.');
-  process.exit(1);
-}
-
-const sessionData = JSON.parse(fs.readFileSync(SESSION_FILE_PATH));
-
-// ✅ Initialize client with session
-const client = new Client({
-  session: sessionData,
-  puppeteer: {
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    headless: true,
-  }
+// Basic Express web server just to keep Render happy
+app.get('/', (req, res) => {
+  res.send('✅ PSI-09 WhatsApp bot is running.');
+});
+app.listen(port, () => {
+  console.log(`🌐 Listening on port ${port}`);
 });
 
-client.on('ready', () => {
-  console.log('🤖 PSI-09 Bot is ready and connected to WhatsApp Web');
-});
+// Load WhatsApp session from whatsapp-session.json
+const startBot = async () => {
+  const sessionData = JSON.parse(
+    await fs.readFile('./whatsapp-session.json', 'utf8')
+  );
 
-client.on('auth_failure', msg => {
-  console.error('❌ Authentication failed:', msg);
-});
+  const client = new Client({
+    session: sessionData,
+    puppeteer: {
+      args: ['--no-sandbox'],
+    },
+  });
 
-client.on('disconnected', reason => {
-  console.log('⚠️ Client was logged out:', reason);
-});
+  client.on('ready', () => {
+    console.log('✅ WhatsApp bot is ready');
+  });
 
-client.on('message', async msg => {
-  const contact = await msg.getContact();
-  const chat = await msg.getChat();
+  client.on('message', async (msg) => {
+    const chat = await msg.getChat();
+    const contact = await msg.getContact();
 
-  const isGroup = chat.isGroup;
-  const senderName = contact.pushname || contact.number;
-  const groupName = isGroup ? chat.name : null;
+    const isGroup = chat.isGroup;
+    const senderName = isGroup
+      ? contact.pushname || contact.name || contact.number
+      : chat.name || contact.pushname || contact.name || contact.number;
 
-  if (!isGroup || msg.body.includes('@Supratim_H')) {
-    console.log(`📩 ${isGroup ? `[${groupName}]` : ''} ${senderName}: ${msg.body}`);
+    const groupName = isGroup ? chat.name : null;
+
+    console.log(`📩 New ${isGroup ? 'group' : 'personal'} message from ${senderName}: ${msg.body}`);
+
+    // Only respond to group messages containing @Supratim_H
+    if (isGroup && !msg.body.includes('@Supratim_H')) {
+      console.log('⏭️ Group message ignored (no @Supratim_H mention).');
+      return;
+    }
 
     try {
-      const res = await axios.post(process.env.PSI09_API_URL, {
+      const response = await axios.post(process.env.PSI09_API_URL, {
         message: msg.body,
         sender: senderName,
         group_name: groupName,
       });
 
-      const reply = res.data.reply || '[No reply]';
+      const reply = response.data.reply || '[No reply]';
+      console.log(`🤖 PSI-09 reply: ${reply}`);
       msg.reply(reply);
-      console.log('🤖 PSI-09:', reply);
-    } catch (err) {
-      console.error('❌ Error sending message to PSI-09 API:', err.message);
+    } catch (error) {
+      console.error('❌ Error sending message to PSI-09:', error.message);
     }
-  }
-});
+  });
 
-client.initialize();
+  client.initialize();
+};
+
+startBot();
