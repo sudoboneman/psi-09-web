@@ -1,15 +1,14 @@
 {
   "name": "psi09-whatsapp-bot",
   "version": "1.0.0",
-  "type": "module",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "puppeteer": "^22.5.0",
-    "chrome-aws-lambda": "^10.1.0",
+    "axios": "^1.6.8",
     "dotenv": "^17.2.0",
-    "axios": "^1.6.7"
+    "whatsapp-web.js": "^1.23.0"
   }
 }
