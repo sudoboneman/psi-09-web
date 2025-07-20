@@ -55,7 +55,37 @@ const startBot = async () => {
   });
 
   client.on('message', async (msg) => {
-    // Your original message handling code
+    const chat = await msg.getChat();
+    const contact = await msg.getContact();
+
+    const isGroup = chat.isGroup;
+    const senderName = isGroup
+      ? contact.pushname || contact.name || contact.number
+      : chat.name || contact.pushname || contact.name || contact.number;
+
+    const groupName = isGroup ? chat.name : null;
+
+    console.log(`📩 New ${isGroup ? 'group' : 'personal'} message from ${senderName}: ${msg.body}`);
+
+    // Only respond to group messages containing @Supratim_H
+    if (isGroup && !msg.body.includes('@Supratim_H')) {
+      console.log('⏭️ Group message ignored (no @Supratim_H mention).');
+      return;
+    }
+
+    try {
+      const response = await axios.post(process.env.PSI09_API_URL, {
+        message: msg.body,
+        sender: senderName,
+        group_name: groupName,
+      });
+
+      const reply = response.data.reply || '[No reply]';
+      console.log(`🤖 PSI-09 reply: ${reply}`);
+      msg.reply(reply);
+    } catch (error) {
+      console.error('❌ Error sending message to PSI-09:', error.message);
+    }
   });
 
   try {
