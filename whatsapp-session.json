@@ -2,10 +2,10 @@
   "cookies": [
     {
       "name": "wa_ul",
-      "value": "7f82b763-8158-4773-98a6-bc527cbd2357",
+      "value": "569ce5ea-ec8d-429f-b6fd-ed26e269739c",
       "domain": ".web.whatsapp.com",
       "path": "/",
-      "expires": 1760771651.372039,
+      "expires": 1760772572.162947,
       "httpOnly": true,
       "secure": true,
       "sameSite": "Lax"
@@ -15,7 +15,7 @@
       "value": "en_GB",
       "domain": ".web.whatsapp.com",
       "path": "/",
-      "expires": 1755414856,
+      "expires": 1755415775,
       "httpOnly": false,
       "secure": true,
       "sameSite": "Lax"
@@ -27,19 +27,19 @@
       "localStorage": [
         {
           "name": "WAUnknownID",
-          "value": "\"unknown-5923349684\""
+          "value": "\"unknown-5405067638\""
         },
         {
           "name": "last-wid-md",
-          "value": "\"919477853548:19@c.us\""
+          "value": "\"919477853548:21@c.us\""
         },
         {
           "name": "WALid",
-          "value": "\"230816475041915:19@lid\""
+          "value": "\"230816475041915:21@lid\""
         },
         {
           "name": "WANoiseInfo",
-          "value": "{\"privKey\":\"XrS+QlAMZGprlc20wpvma/mijnjopURRx95dzlK0ts/co8dVuOCCTLDsyhGGQsek\",\"pubKey\":\"73wvk4a+/JqoyIveOwoDV90KElMufrJ4Kid8r68i7SrBfY9kyf5Nf/ySVTpbYdZh\",\"recoveryToken\":\"8F7u/j3X2Sag7oVRgkKQHH2iFmfuWTQQn6+MPY30uHY=\"}"
+          "value": "{\"privKey\":\"xTSTQy7uBEadTKGamFcD5Qke/U4S6LdV+Ra9R2WDy1KkJfpTWMc6CjNKY7Gq0V54\",\"pubKey\":\"TfaADoXWz3qSqi1c42pIFQw8bmfL8P/+5OdI64XzgSfkZszvglbcAp+ZV3XOmCOi\",\"recoveryToken\":\"vLXBtuxTRAxGWAz5VywQJeXCS+gPVrRFjJ99ohtvFYw=\"}"
         },
         {
           "name": "WALangPhonePref",
@@ -47,35 +47,35 @@
         },
         {
           "name": "WAWebWAMBeaconingSettings",
-          "value": "\"[{\\\"key\\\":\\\"regular\\\",\\\"ts\\\":1752995668,\\\"value\\\":null}]\""
+          "value": "\"[{\\\"key\\\":\\\"regular\\\",\\\"ts\\\":1752996587,\\\"value\\\":null}]\""
         },
         {
           "name": "WAWebEncKeySalt",
-          "value": "\"jUgv8WTIVHY3Tncs7/KQqqcY1HXMxSbqwLhdsKIDqJGg+l5JRnT/3e6J9V6+UW/0pmVb/HKd5tjiMBuk2ZHWIsu4uL6FUxAxw3qJdyoAz/k8hmPnMrka5gZAEGCTWFcXzMJ9B9+jE6g/5AHZVZsmMnwwIo79aO3TdzOc8MUU30Y=\""
+          "value": "\"+GglZf+F6PKHIvmXVdzOKBXj8gkRjpYoI4SaO1FNSf+86+BaludtBcU3QR65KhqAeR+OFW6FxVvxLMpDEXHMedY1XhUdyMCm9rjxAXwneiUpz5UHaAc8WRDormUwAySheypUHUb78HaeMdIA37UwompFLzsBaGXSRJdW46Jty7A=\""
         },
         {
           "name": "MdPairingTimestamp",
-          "value": "1752995730"
+          "value": "1752996626"
         },
         {
           "name": "WebEncKeySalt",
-          "value": "\"jUgv8WTIVHY3Tncs7/KQqqcY1HXMxSbqwLhdsKIDqJGg+l5JRnT/3e6J9V6+UW/0pmVb/HKd5tjiMBuk2ZHWIsu4uL6FUxAxw3qJdyoAz/k8hmPnMrka5gZAEGCTWFcXzMJ9B9+jE6g/5AHZVZsmMnwwIo79aO3TdzOc8MUU30Y=\""
+          "value": "\"+GglZf+F6PKHIvmXVdzOKBXj8gkRjpYoI4SaO1FNSf+86+BaludtBcU3QR65KhqAeR+OFW6FxVvxLMpDEXHMedY1XhUdyMCm9rjxAXwneiUpz5UHaAc8WRDormUwAySheypUHUb78HaeMdIA37UwompFLzsBaGXSRJdW46Jty7A=\""
         },
         {
           "name": "Session",
-          "value": "7qvkxa:1752995685820"
+          "value": "kq7m2x:1752996606630"
         },
         {
           "name": "WADailyStatsStartTime",
-          "value": "1752995730309"
+          "value": "1752996626682"
         },
         {
           "name": "WANoiseInfoIv",
-          "value": "[\"pO6R5OYmrTW8cx6Olv7GAA==\",\"0uh1dq7k5QmjQTitVslnkg==\",\"013CJY8dJoxsh5bL5jtZgA==\",\"+I1xEQiPV5N8FjoYZv03pA==\"]"
+          "value": "[\"vtRRgs3+pfeHbVXJWoJbIg==\",\"LHcpYwXD9Mr2T0lE4hiayw==\",\"cvo1yLykj5KqSymtE//NWg==\",\"Hcz7wuBe2p8pugrZabRkSA==\"]"
         },
         {
           "name": "whatsapp-mutex",
-          "value": "\"x2897733:init_1752995658885\""
+          "value": "\"x259683543:init_1752996577369\""
         }
       ]
     }
