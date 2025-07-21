@@ -1,15 +1,16 @@
 {
-  "name": "psi09-whatsapp-bot",
-  "version": "1.0.0",
+  "name": "psi-09-webjs",
   "type": "module",
+  "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "login": "node login.js"
   },
   "dependencies": {
-    "axios": "^1.10.0",
+    "axios": "^1.6.8",
     "dotenv": "^17.2.0",
-    "express": "^4.21.2",
-    "whatsapp-web.js": "^1.31.0"
+    "express": "^4.19.2",
+    "whatsapp-web.js": "^1.23.0"
   }
 }
