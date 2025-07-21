@@ -13,6 +13,12 @@ const port = process.env.PORT || 10000;
 app.get('/', (req, res) => {
   res.send('✅ PSI-09 WhatsApp bot is running.');
 });
+
+app.get('/ping', (req, res) => {
+  console.log('🔁 Ping received from cron-job.org');
+  res.sendStatus(200);
+});
+
 app.listen(port, () => {
   console.log(`🌐 Listening on port ${port}`);
 });
