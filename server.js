@@ -48,7 +48,7 @@ client.on('message', async (msg) => {
 
   console.log(`📩 New ${isGroup ? 'group' : 'personal'} message from ${senderName}: ${msg.body}`);
 
-  if (isGroup && !msg.body.includes('@Supratim_H')) {
+  if (isGroup && !msg.body.includes('@919477853548')) {
     console.log('⏭️ Group message ignored (no @Supratim_H mention).');
     return;
   }
