@@ -61,6 +61,12 @@ client.on('message', async (msg) => {
     });
 
     const reply = response.data.reply || '[No reply]';
+
+    if (!reply || reply.trim() === "") {
+      console.log('🛑 Empty reply from PSI-09. Skipping response.');
+      return;
+    }
+
     console.log(`🤖 PSI-09 reply: ${reply}`);
     await msg.reply(reply);
   } catch (error) {
