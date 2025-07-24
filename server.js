@@ -60,15 +60,14 @@ client.on('message', async (msg) => {
       group_name: groupName,
     });
 
-    const reply = response.data.reply || '[No reply]';
+    const reply = response.data.reply || '';
 
-    if (!reply || reply.trim() === "") {
+    if (!reply.trim()) {
       console.log('🛑 Empty reply from PSI-09. Skipping response.');
-      return;
+    } else{
+      console.log(`🤖 PSI-09 reply: ${reply}`);
+      await msg.reply(reply);
     }
-
-    console.log(`🤖 PSI-09 reply: ${reply}`);
-    await msg.reply(reply);
   } catch (error) {
     console.error('❌ Error sending message to PSI-09:', error.message);
   }
