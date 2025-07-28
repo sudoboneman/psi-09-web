@@ -6,4 +6,4 @@ services:
     startCommand: npm start
     envVars:
       - key: PSI09_API_URL
-        value: https://psi-09-roastbot.onrender.com/psi09
+        value: false
