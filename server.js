@@ -15,7 +15,6 @@ app.get('/', (req, res) => {
 });
 
 app.get('/ping', (req, res) => {
-  console.log('🔁 Ping received from cron-job.org');
   res.sendStatus(200);
 });
 
@@ -49,7 +48,7 @@ client.on('message', async (msg) => {
   console.log(`📩 New ${isGroup ? 'group' : 'personal'} message from ${senderName}: ${msg.body}`);
 
   if (isGroup && !msg.body.includes('@919477853548')) {
-    console.log('⏭️ Group message ignored (no @Supratim_H mention).');
+    console.log('⏭️ Group message ignored');
     return;
   }
 
