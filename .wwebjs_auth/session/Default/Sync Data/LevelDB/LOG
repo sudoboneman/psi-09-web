@@ -1,2 +1,2 @@
-2025/07/21-20:56:42.942 4d6a4 Creating DB /home/boneman/psi-09-local/.wwebjs_auth/session/Default/Sync Data/LevelDB since it was missing.
-2025/07/21-20:56:42.966 4d6a4 Reusing MANIFEST /home/boneman/psi-09-local/.wwebjs_auth/session/Default/Sync Data/LevelDB/MANIFEST-000001
+2025/08/26-19:04:36.951 5a36 Creating DB /mnt/storage/projects/psi-09-local/.wwebjs_auth/session/Default/Sync Data/LevelDB since it was missing.
+2025/08/26-19:04:37.193 5a36 Reusing MANIFEST /mnt/storage/projects/psi-09-local/.wwebjs_auth/session/Default/Sync Data/LevelDB/MANIFEST-000001

@@ -1,2 +1,2 @@
-2025/07/21-20:56:44.243 4d6c5 Creating DB /home/boneman/psi-09-local/.wwebjs_auth/session/Default/shared_proto_db/metadata since it was missing.
-2025/07/21-20:56:44.257 4d6c5 Reusing MANIFEST /home/boneman/psi-09-local/.wwebjs_auth/session/Default/shared_proto_db/metadata/MANIFEST-000001
+2025/08/26-19:04:39.461 5c90 Creating DB /mnt/storage/projects/psi-09-local/.wwebjs_auth/session/Default/shared_proto_db/metadata since it was missing.
+2025/08/26-19:04:40.131 5c90 Reusing MANIFEST /mnt/storage/projects/psi-09-local/.wwebjs_auth/session/Default/shared_proto_db/metadata/MANIFEST-000001

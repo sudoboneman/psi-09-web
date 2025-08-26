@@ -1,3 +1,2 @@
-2025/07/21-20:56:42.746 4d6bb Reusing MANIFEST /home/boneman/psi-09-local/.wwebjs_auth/session/Default/Local Storage/leveldb/MANIFEST-000001
-2025/07/21-20:56:42.751 4d6bb Recovering log #3
-2025/07/21-20:56:42.753 4d6bb Reusing old log /home/boneman/psi-09-local/.wwebjs_auth/session/Default/Local Storage/leveldb/000003.log 
+2025/08/26-19:04:35.715 5bac Creating DB /mnt/storage/projects/psi-09-local/.wwebjs_auth/session/Default/Local Storage/leveldb since it was missing.
+2025/08/26-19:04:36.149 5bac Reusing MANIFEST /mnt/storage/projects/psi-09-local/.wwebjs_auth/session/Default/Local Storage/leveldb/MANIFEST-000001
