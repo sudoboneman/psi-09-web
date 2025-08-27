@@ -1,5 +1,7 @@
 import express from 'express';
-import { Client, LocalAuth } from 'whatsapp-web.js';
+import { Client } from 'whatsapp-web.js';
+import pkg from 'whatsapp-web.js';
+const { LocalAuth } = pkg;
 import dotenv from 'dotenv';
 import axios from 'axios';
 
