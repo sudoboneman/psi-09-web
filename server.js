@@ -1,7 +1,5 @@
 import express from 'express';
-import { Client } from 'whatsapp-web.js';
-import pkg from 'whatsapp-web.js';
-const { LocalAuth } = pkg;
+import { Client, LocalAuth } from 'whatsapp-web.js';
 import dotenv from 'dotenv';
 import axios from 'axios';
 
@@ -10,13 +8,8 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 10000;
 
-app.get('/', (req, res) => {
-  res.send('✅ PSI-09 WhatsApp bot is running.');
-});
-
-app.get('/ping', (req, res) => {
-  res.sendStatus(200);
-});
+app.get('/', (_, res) => res.send('✅ PSI-09 WhatsApp bot is running.'));
+app.get('/ping', (_, res) => res.sendStatus(200));
 
 app.listen(port, () => {
   console.log(`🌐 Listening on port ${port}`);
@@ -35,40 +28,42 @@ client.on('ready', () => {
 });
 
 client.on('message', async (msg) => {
-  const chat = await msg.getChat();
-  const contact = await msg.getContact();
-
-  const isGroup = chat.isGroup;
-  const senderName = isGroup
-    ? contact.pushname || contact.name || contact.number
-    : chat.name || contact.pushname || contact.name || contact.number;
-
-  const groupName = isGroup ? chat.name : null;
-
-  console.log(`📩 New ${isGroup ? 'group' : 'personal'} message from ${senderName}: ${msg.body}`);
-
-  if (isGroup && !msg.body.includes('@919477853548')) {
-    console.log('⏭️ Group message ignored');
-    return;
-  }
-
   try {
-    const response = await axios.post(process.env.PSI09_API_URL, {
+    const chat = await msg.getChat();
+    const contact = await msg.getContact();
+
+    const isGroup = chat.isGroup;
+    const senderName =
+      contact.pushname || contact.name || contact.number || chat.name;
+
+    const groupName = isGroup ? chat.name : null;
+
+    console.log(
+      `📩 ${isGroup ? 'Group' : 'Personal'} message from ${senderName}: ${msg.body}`
+    );
+
+    // Call PSI-09 API
+    const { data } = await axios.post(process.env.PSI09_API_URL, {
       message: msg.body,
       sender: senderName,
       group_name: groupName,
     });
 
-    const reply = response.data.reply || '';
+    const reply = String(data.reply || '').trim();
 
-    if (!reply.trim()) {
+    if (!reply) {
       console.log('🛑 Empty reply from PSI-09. Skipping response.');
-    } else{
-      console.log(`🤖 PSI-09 reply: ${reply}`);
-      await msg.reply(reply);
+      return;
     }
+
+    console.log(`🤖 PSI-09 reply: ${reply}`);
+    await msg.reply(reply);
   } catch (error) {
-    console.error('❌ Error sending message to PSI-09:', error.message);
+    console.error('❌ Error handling message:', {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data,
+    });
   }
 });
 
