@@ -31,6 +31,12 @@ client.on('ready', () => {
 
 client.on('message', async (msg) => {
   try {
+    // 🛑 Ignore bot’s own messages to prevent roast loops
+    if (msg.fromMe) return;
+
+    // 🛑 Ignore empty/system messages
+    if (!msg.body || msg.body.trim() === '') return;
+
     const chat = await msg.getChat();
     const contact = await msg.getContact();
 
@@ -44,10 +50,10 @@ client.on('message', async (msg) => {
       `📩 ${isGroup ? 'Group' : 'Personal'} message from ${senderName}: ${msg.body}`
     );
 
-    // Call PSI-09 API
+    // ✅ Now safe to call PSI-09 API
     const { data } = await axios.post(process.env.PSI09_API_URL, {
       message: msg.body,
-      sender: senderName,
+      sender: senderName || 'Unknown',
       group_name: groupName,
     });
 
